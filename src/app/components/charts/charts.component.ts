@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Chart } from "chart.js";
+import * as _ from "lodash";
 @Component({
   selector: "app-charts",
   templateUrl: "./charts.component.html",
@@ -7,18 +8,23 @@ import { Chart } from "chart.js";
 })
 export class ChartsComponent implements OnInit {
   @Input("my-id") myId = "";
+  @Input("type") type = "bar";
+  @Input("data") data = [];
   constructor() {}
 
   ngOnInit(): void {}
   ngAfterViewInit() {
+    let labels = _.map(this.data, "label");
+    let quantities = _.map(this.data, "quantity");
+
     var myChart = new Chart(this.myId, {
-      type: "bar",
+      type: this.type,
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: labels,
         datasets: [
           {
             label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            data: quantities,
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
