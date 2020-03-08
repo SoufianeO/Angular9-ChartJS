@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnChanges } from "@angular/core";
 import { Chart } from "chart.js";
 import * as _ from "lodash";
 @Component({
@@ -6,14 +6,20 @@ import * as _ from "lodash";
   templateUrl: "./charts.component.html",
   styleUrls: ["./charts.component.css"]
 })
-export class ChartsComponent implements OnInit {
+export class ChartsComponent implements OnInit, OnChanges {
   @Input("my-id") myId = "";
   @Input("type") type = "bar";
   @Input("data") data = [];
   constructor() {}
 
   ngOnInit(): void {}
+  ngOnChanges() {
+    this.makeChart();
+  }
   ngAfterViewInit() {
+    this.makeChart();
+  }
+  makeChart() {
     let labels = _.map(this.data, "label");
     let quantities = _.map(this.data, "quantity");
 
@@ -25,22 +31,14 @@ export class ChartsComponent implements OnInit {
           {
             label: "# of Votes",
             data: quantities,
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
-            ],
+            backgroundColor: labels.map(
+              () =>
+                `rgba(${this.getRandomNumber(0, 255)},${this.getRandomNumber(
+                  0,
+                  255
+                )}, ${this.getRandomNumber(0, 255)}, 1)`
+            ),
+            borderColor: ["rgba(255, 255, 255, 1)"],
             borderWidth: 1
           }
         ]
@@ -57,5 +55,8 @@ export class ChartsComponent implements OnInit {
         }
       }
     });
+  }
+  getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (+max - +min)) + +min;
   }
 }
